@@ -14,42 +14,42 @@ fi
 
 ############# FIXED DIRECTORIES ################
 
-SCRIPT_DIR="/isilon/sequencing/Kurt/GIT_REPO/VITO/Mendel_Release_SetUp_Revamp/Scripts/"
-JAVA_1_7="/isilon/sequencing/Kurt/Programs/Java/jdk1.7.0_25/bin"
-CORE_PATH="/isilon/sequencing/Seq_Proj/"
-GATK_DIR="/isilon/sequencing/CIDRSeqSuiteSoftware/gatk/GATK_3/GenomeAnalysisTK-3.3-0"
-GATK_3_1_1_DIR="/isilon/sequencing/CIDRSeqSuiteSoftware/gatk/GATK_3/GenomeAnalysisTK-3.1-1"
-GATK_DIR_NIGHTLY="/isilon/sequencing/CIDRSeqSuiteSoftware/gatk/GATK_3/GenomeAnalysisTK-nightly-2015-01-15-g92376d3"
-SAMTOOLS_DIR="/isilon/sequencing/Kurt/Programs/samtools/samtools-0.1.18/"
-TABIX_DIR="/isilon/sequencing/Kurt/Programs/TABIX/tabix-0.2.6/"
-CIDR_SEQSUITE_JAVA_DIR="/isilon/sequencing/CIDRSeqSuiteSoftware/java/jre1.7.0_45/bin"
-CIDR_SEQSUITE_6_1_1_DIR="/isilon/sequencing/CIDRSeqSuiteSoftware/RELEASES/6.1.1"
-CIDR_SEQSUITE_4_0_JAVA='/isilon/sequencing/CIDRSeqSuiteSoftware/java/jre1.6.0_25/bin'
-CIDR_SEQSUITE_DIR_4_0='/isilon/sequencing/CIDRSeqSuiteSoftware/Version_4_0'
+SCRIPT_DIR="/mnt/research/tools/LINUX/00_GIT_REPO_KURT/CMG_Exome_Joint_Call/scripts"
+JAVA_1_7="/mnt/research/tools/LINUX/JAVA/jdk1.7.0_25/bin"
+CORE_PATH="/mnt/research/active/"
+GATK_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.3-0"
+GATK_3_1_1_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.1-1"
+GATK_DIR_NIGHTLY="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-nightly-2015-01-15-g92376d3"
+SAMTOOLS_DIR="/mnt/research/tools/LINUX/SAMTOOLS/samtools-0.1.18"
+TABIX_DIR="/mnt/research/tools/LINUX/TABIX/tabix-0.2.6"
+CIDR_SEQSUITE_JAVA_DIR="/mnt/research/tools/LINUX/JAVA/jre1.7.0_45/bin"
+CIDR_SEQSUITE_6_1_1_DIR="/mnt/research/tools/LINUX/CIDRSEQSUITE/6.1.1"
+CIDR_SEQSUITE_4_0_JAVA='/mnt/research/tools/LINUX/JAVA/jre1.6.0_25/bin'
+CIDR_SEQSUITE_DIR_4_0='/mnt/research/tools/LINUX/CIDRSEQSUITE/Version_4_0'
 ############## FIXED FILE PATHS ################
 
-KEY="/isilon/sequencing/CIDRSeqSuiteSoftware/gatk/GATK_2/lee.watkins_jhmi.edu.key"
-HAPMAP_VCF="/isilon/sequencing/GATK_resource_bundle/2.5/b37/hapmap_3.3.b37.vcf"
-OMNI_VCF="/isilon/sequencing/GATK_resource_bundle/2.5/b37/1000G_omni2.5.b37.vcf"
-ONEKG_SNPS_VCF="/isilon/sequencing/GATK_resource_bundle/2.5/b37/1000G_phase1.snps.high_confidence.b37.vcf"
-DBSNP_138_VCF="/isilon/sequencing/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.vcf"
-ONEKG_INDELS_VCF="/isilon/sequencing/GATK_resource_bundle/2.2/b37/Mills_and_1000G_gold_standard.indels.b37.vcf"
-P3_1KG="/isilon/sequencing/1000genomes/Full_Project/Sep_2014/20130502/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.vcf.gz"
-ExAC="/isilon/sequencing/ExAC/Release_0.3/ExAC.r0.3.sites.vep.vcf.gz"
-KNOWN_SNPS="/isilon/sequencing/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.excluding_sites_after_129.vcf"
-VERACODE_CSV="/isilon/sequencing/CIDRSeqSuiteSoftware/resources/Veracode_hg18_hg19.csv"
+KEY="/mnt/research/tools/PIPELINE_FILES/MISC/lee.watkins_jhmi.edu.key"
+HAPMAP_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/hapmap_3.3.b37.vcf"
+OMNI_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/1000G_omni2.5.b37.vcf"
+ONEKG_SNPS_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/1000G_phase1.snps.high_confidence.b37.vcf"
+DBSNP_138_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.vcf"
+ONEKG_INDELS_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/Mills_and_1000G_gold_standard.indels.b37.vcf"
+P3_1KG="/mnt/shared_resources/public_resources/1000genomes/Full_Project/Sep_2014/20130502/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.vcf.gz"
+ExAC="/mnt/shared_resources/public_resources/ExAC/Release_0.3/ExAC.r0.3.sites.vep.vcf.gz"
+KNOWN_SNPS="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.excluding_sites_after_129.vcf"
+VERACODE_CSV="/mnt/research/tools/LINUX/CIDRSEQSUITE/Veracode_hg18_hg19.csv"
 # this is a combined v4 and v4 all merged bait bed files
-MERGED_MENDEL_BED_FILE="/isilon/sequencing/Seq_Proj/M_Valle_MendelianDisorders_SeqWholeExome_120511_GATK_3_3-0/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
+MERGED_MENDEL_BED_FILE="/mnt/research/active/M_Valle_MendelianDisorders_SeqWholeExome_120511/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
 
-QUEUE_LIST=`qstat -f -s r | egrep -v "^[0-9]|^-|^queue" | cut -d @ -f 1 | sort | uniq | egrep -v "bigmem.q|all.q|cgc.q|programmers.q|uhoh.q|rhel7.q|lemon.q" | datamash collapse 1 | awk '{print "-q",$1}'`
+QUEUE_LIST=`qstat -f -s r | egrep -v "^[0-9]|^-|^queue" | cut -d @ -f 1 | sort | uniq | egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|lemon.q" | datamash collapse 1 | awk '{print "-q",$1}'`
 
 ############################################################################
 ################# Start of Combine Gvcf Functions ##########################
 ############################################################################
 
-mkdir -p $CORE_PATH/$PROJECT/LOGS
+mkdir -p $CORE_PATH/$PROJECT/{LOGS,TEMP}
 mkdir -p $CORE_PATH/$PROJECT/MULTI_SAMPLE/VARIANT_SUMMARY_STAT_VCF/
-
+mkdir -p $CORE_PATH/$PROJECT/GVCF/AGGREGATE
 
 # for each mendel project in the sample sheet grab the reference genome and dbsnp file
 

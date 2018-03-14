@@ -31,3 +31,7 @@ CMD=$CMD' -o '$CORE_PATH'/'$PROJECT'/TEMP/'$PREFIX'.'$BED_FILE'.temp.vcf'
 echo $CMD >> $CORE_PATH/$PROJECT/command_lines.txt
 echo >> $CORE_PATH/$PROJECT/command_lines.txt
 echo $CMD | bash
+
+echo
+
+ls $CORE_PATH/$PROJECT/TEMP/$PREFIX"."$BED_FILE_NAME".temp.vcf.idx"
