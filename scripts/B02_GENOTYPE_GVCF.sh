@@ -34,4 +34,4 @@ echo $CMD | bash
 
 echo
 
-ls $CORE_PATH/$PROJECT/TEMP/$PREFIX"."$BED_FILE_NAME".temp.vcf.idx"
+ls $CORE_PATH/$PROJECT/TEMP/$PREFIX"."$BED_FILE".temp.vcf.idx"
