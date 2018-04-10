@@ -1,13 +1,13 @@
 #!/bin/bash
 
-PROJECT=$1 # The project folder that is housing all the multi-sample goods For now : M_Valle_MendelianDisorders_SeqWholeExome_120511_GATK_3_3-0
+PROJECT=$1 # The project folder that is housing all the multi-sample goods For now : M_Valle_MD_SeqWholeExome_120417_1
 SAMPLE_SHEET=$2 # MS sample sheet
 PREFIX=$3 # Name you want all the multi-sample files to be names
 NUMBER_OF_BED_FILES=$4 # how many mini-bed files you want to scatter gather on.
 
 # argument 4 is null then the master bed files is split into 500 bed files.
 
-if [[ $NUMBER_OF_BED_FILES -lt 500 ]]
+if [[ ! $NUMBER_OF_BED_FILES ]]
 	then
 	NUMBER_OF_BED_FILES=500
 fi
@@ -39,7 +39,7 @@ ExAC="/mnt/shared_resources/public_resources/ExAC/Release_0.3/ExAC.r0.3.sites.ve
 KNOWN_SNPS="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.excluding_sites_after_129.vcf"
 VERACODE_CSV="/mnt/research/tools/LINUX/CIDRSEQSUITE/Veracode_hg18_hg19.csv"
 # this is a combined v4 and v4 all merged bait bed files
-MERGED_MENDEL_BED_FILE="/mnt/research/active/M_Valle_MendelianDisorders_SeqWholeExome_120511/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
+MERGED_MENDEL_BED_FILE="/mnt/research/active/M_Valle_MD_SeqWholeExome_120417_1/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
 
 QUEUE_LIST=`qstat -f -s r | egrep -v "^[0-9]|^-|^queue" | cut -d @ -f 1 | sort | uniq | egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|lemon.q" | datamash collapse 1 | awk '{print "-q",$1}'`
 
