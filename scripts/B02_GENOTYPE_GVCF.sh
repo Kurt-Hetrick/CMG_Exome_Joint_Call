@@ -24,6 +24,7 @@ CMD=$CMD' --disable_auto_index_creation_and_locking_when_reading_rods'
 CMD=$CMD' -XL 11:78516315-78516329'
 CMD=$CMD' -XL 19:5787188-5787257'
 CMD=$CMD' -XL 9:15623473-15623473'
+CMD=$CMD' -XL 11:71932113-71932113'
 CMD=$CMD' -et NO_ET'
 CMD=$CMD' -K '$KEY
 CMD=$CMD' -o '$CORE_PATH'/'$PROJECT'/TEMP/'$PREFIX'.'$BED_FILE'.temp.vcf'
