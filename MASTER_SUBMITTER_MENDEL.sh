@@ -41,7 +41,22 @@ VERACODE_CSV="/mnt/research/tools/LINUX/CIDRSEQSUITE/Veracode_hg18_hg19.csv"
 # this is a combined v4 and v4 all merged bait bed files
 MERGED_MENDEL_BED_FILE="/mnt/research/active/M_Valle_MD_SeqWholeExome_120417_1/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
 
-QUEUE_LIST=`qstat -f -s r | egrep -v "^[0-9]|^-|^queue" | cut -d @ -f 1 | sort | uniq | egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|lemon.q" | datamash collapse 1 | awk '{print "-q",$1}'`
+QUEUE_LIST=`qstat -f -s r \
+| egrep -v "^[0-9]|^-|^queue" \
+| cut -d @ -f 1 \
+| sort \
+| uniq \
+| egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|bina.q" \
+| datamash collapse 1 \
+| awk '{print "-q",$1}'`
+
+# load gcc 5.1.0 for programs like verifyBamID
+## this will get pushed out to all of the compute nodes since I specify env var to pushed out with qsub
+module load gcc/5.1.0
+
+# explicitly setting this b/c not everybody has had the $HOME directory transferred and I'm not going to through
+# and figure out who does and does not have this set correctly
+umask 0007
 
 ############################################################################
 ################# Start of Combine Gvcf Functions ##########################
@@ -53,7 +68,8 @@ mkdir -p $CORE_PATH/$PROJECT/GVCF/AGGREGATE
 
 # for each mendel project in the sample sheet grab the reference genome and dbsnp file
 
-CREATE_PROJECT_INFO_ARRAY (){
+CREATE_PROJECT_INFO_ARRAY ()
+{
 PROJECT_INFO_ARRAY=(`sed 's/\r//g' $SAMPLE_SHEET | sed 's/,/\t/g' | awk 'NR>1 {print $12,$18}' | sort | uniq`)
 
 REF_GENOME=${PROJECT_INFO_ARRAY[0]}
@@ -64,18 +80,37 @@ PROJECT_DBSNP=${PROJECT_INFO_ARRAY[1]}
 # take the sample sheet and create a gvcf list from that
 # append the two outputs and write #line_count".samples.ReSeq.JH2027.list"
 
-CREATE_GVCF_LIST(){
+CREATE_GVCF_LIST()
+{
 OLD_GVCF_LIST=$(ls -tr $CORE_PATH/$PROJECT/*.samples.ReSeq.JH2027.list | tail -n1)
-TOTAL_SAMPLES=(`(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET | sort | uniq | awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') | sort | uniq | wc -l`)
-(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET | sort | uniq | awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') | sort | uniq \
+
+TOTAL_SAMPLES=(`(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET \
+	| sort \
+	| uniq \
+	| awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') \
+	| sort \
+	| uniq \
+	| wc -l`)
+
+(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET \
+	| sort \
+	| uniq \
+	| awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') \
+| sort \
+| uniq \
 >| $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'
+
 GVCF_LIST=(`echo $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'`)
 }
 
-FORMAT_AND_SCATTER_BAIT_BED() {
+FORMAT_AND_SCATTER_BAIT_BED()
+{
 BED_FILE_PREFIX=(`echo SPLITTED_BED_FILE_`)
 
-awk 1 $MERGED_MENDEL_BED_FILE | sed -r 's/\r//g ; s/chr//g ; s/[[:space:]]+/\t/g' >| $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed
+awk 1 $MERGED_MENDEL_BED_FILE \
+| sed -r 's/\r//g ; s/chr//g ; s/[[:space:]]+/\t/g' \
+>| $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed
+
 (awk '$1~/^[0-9]/' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k1,1n -k2,2n ; \
 awk '$1=="X"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
 awk '$1=="Y"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
@@ -86,14 +121,28 @@ awk '$1=="MT"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | 
 # divide the line count by the number of mini-bed files you want
 # if there is a remainder round up the next integer
 
-INTERVALS_DIVIDED=`wc -l $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed | awk '{print $1"/""'$NUMBER_OF_BED_FILES'"}' | bc | awk '{print $0+1}'`
+# this somehow sort of works, but the math ends up being off...
+# if I wanted 1000 fold scatter gather, this would actually create 997.
+# and I don't see how this actually rounds up, but it must otherwise split would not work.
 
-split -l $INTERVALS_DIVIDED -a 4 -d  $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX
+INTERVALS_DIVIDED=`wc -l $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
+| awk '{print $1 "/" "'$NUMBER_OF_BED_FILES'"}' \
+| bc \
+| awk '{print $0+1}'`
 
-ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX* | awk '{print "mv",$0,$0".bed"}' | bash
+split -l $INTERVALS_DIVIDED \
+-a 4 \
+-d \
+$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
+$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX
+
+ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX* \
+| awk '{print "mv",$0,$0".bed"}' \
+| bash
 }
 
-COMBINE_GVCF(){
+COMBINE_GVCF()
+{
 echo \
  qsub $QUEUE_LIST \
  -N 'A01_COMBINE_GVCF_'$PROJECT'_'$BED_FILE_NAME \
@@ -297,7 +346,8 @@ echo \
  $CORE_PATH $PROJECT $SM_TAG $PREFIX $PROJECT_SAMPLE
 }
 
-BGZIP_AND_TABIX_SAMPLE_VCF(){
+BGZIP_AND_TABIX_SAMPLE_VCF()
+{
 echo \
  qsub $QUEUE_LIST \
  -N J10A-1_BGZIP_AND_TABIX_SAMPLE_VCF_$JOB_ID_SM_TAG \
@@ -308,7 +358,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG
 }
 
-SELECT_VARIANTS_ON_TARGET_BY_SAMPLE(){
+SELECT_VARIANTS_ON_TARGET_BY_SAMPLE()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11A_SELECT_VARIANTS_ON_TARGET_BY_SAMPLE_$JOB_ID_SM_TAG \
@@ -319,7 +370,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG $TARGET_BED
 }
 
-SELECT_SNVS_ON_BAIT_BY_SAMPLE(){
+SELECT_SNVS_ON_BAIT_BY_SAMPLE()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11B_SELECT_SNVS_ON_BAIT_BY_SAMPLE_$JOB_ID_SM_TAG \
@@ -330,7 +382,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG
 }
 
-SELECT_SNVS_ON_TARGET_BY_SAMPLE(){
+SELECT_SNVS_ON_TARGET_BY_SAMPLE()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11C_SELECT_SNVS_ON_TARGET_BY_SAMPLE_$JOB_ID_SM_TAG \
@@ -341,7 +394,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG $TARGET_BED
 }
 
-CONCORDANCE_ON_TARGET_PER_SAMPLE(){
+CONCORDANCE_ON_TARGET_PER_SAMPLE()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11C-1_CONCORDANCE_ON_TARGET_PER_SAMPLE_$JOB_ID_SM_TAG \
@@ -352,7 +406,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG $TARGET_BED
 }
 
-SELECT_INDELS_ON_BAIT_BY_SAMPLE(){
+SELECT_INDELS_ON_BAIT_BY_SAMPLE()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11D_SELECT_INDELS_ON_BAIT_BY_SAMPLE_$JOB_ID_SM_TAG \
@@ -363,7 +418,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG
 }
 
-SELECT_INDELS_ON_TARGET_BY_SAMPLE(){
+SELECT_INDELS_ON_TARGET_BY_SAMPLE()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11E_SELECT_INDELS_ON_TARGET_BY_SAMPLE_$JOB_ID_SM_TAG \
@@ -374,7 +430,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG $TARGET_BED
 }
 
-SELECT_SNVS_TITV_ALL(){
+SELECT_SNVS_TITV_ALL()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11F_SELECT_SNVS_TITV_ALL_$JOB_ID_SM_TAG \
@@ -385,7 +442,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG $TITV_BED
 }
 
-TITV_ALL(){
+TITV_ALL()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11F-1_TITV_ALL_$JOB_ID_SM_TAG \
@@ -396,7 +454,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG
 }
 
-SELECT_SNVS_TITV_KNOWN(){
+SELECT_SNVS_TITV_KNOWN()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11G_SELECT_SNVS_TITV_KNOWN_$JOB_ID_SM_TAG \
@@ -407,7 +466,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG $TITV_BED
 }
 
-TITV_KNOWN(){
+TITV_KNOWN()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11G-1_TITV_KNOWN_$JOB_ID_SM_TAG \
@@ -418,7 +478,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG
 }
 
-SELECT_SNVS_TITV_NOVEL(){
+SELECT_SNVS_TITV_NOVEL()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11H_SELECT_SNVS_TITV_NOVEL_$JOB_ID_SM_TAG \
@@ -429,7 +490,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG $TITV_BED
 }
 
-TITV_NOVEL(){
+TITV_NOVEL()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11H-1_TITV_NOVEL_$JOB_ID_SM_TAG \
@@ -440,7 +502,8 @@ echo \
  $CORE_PATH $PROJECT_SAMPLE $SM_TAG
 }
 
-SETUP_AND_RUN_ANNOVAR() {
+SETUP_AND_RUN_ANNOVAR()
+{
 echo \
  qsub $QUEUE_LIST",bigmem.q" \
  -N K11B-1_SETUP_AND_RUN_ANNOVER_$JOB_ID_SM_TAG \
@@ -453,7 +516,8 @@ echo \
  $CORE_PATH
 }
 
-HC_BED_GENERATION(){
+HC_BED_GENERATION()
+{
 echo \
  qsub $QUEUE_LIST \
  -N K11I_HC_BED_GENERATION_$SM_TAG \
