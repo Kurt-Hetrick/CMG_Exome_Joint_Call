@@ -42,13 +42,13 @@ VERACODE_CSV="/mnt/research/tools/LINUX/CIDRSEQSUITE/Veracode_hg18_hg19.csv"
 MERGED_MENDEL_BED_FILE="/mnt/research/active/M_Valle_MD_SeqWholeExome_120417_1/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
 
 QUEUE_LIST=`qstat -f -s r \
-| egrep -v "^[0-9]|^-|^queue" \
-| cut -d @ -f 1 \
-| sort \
-| uniq \
-| egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|bina.q" \
-| datamash collapse 1 \
-| awk '{print "-q",$1}'`
+	| egrep -v "^[0-9]|^-|^queue" \
+	| cut -d @ -f 1 \
+	| sort \
+	| uniq \
+	| egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|bina.q" \
+	| datamash collapse 1 \
+	| awk '{print "-q",$1}'`
 
 # load gcc 5.1.0 for programs like verifyBamID
 ## this will get pushed out to all of the compute nodes since I specify env var to pushed out with qsub
@@ -96,8 +96,8 @@ TOTAL_SAMPLES=(`(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAM
 	| sort \
 	| uniq \
 	| awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') \
-| sort \
-| uniq \
+	| sort \
+	| uniq \
 >| $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'
 
 GVCF_LIST=(`echo $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'`)
@@ -112,9 +112,9 @@ awk 1 $MERGED_MENDEL_BED_FILE \
 >| $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed
 
 (awk '$1~/^[0-9]/' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k1,1n -k2,2n ; \
-awk '$1=="X"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
-awk '$1=="Y"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
-awk '$1=="MT"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n) \
+	awk '$1=="X"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
+	awk '$1=="Y"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
+	awk '$1=="MT"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n) \
 >| $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed
 
 # get a line count for the number of for the bed file above
@@ -126,19 +126,19 @@ awk '$1=="MT"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | 
 # and I don't see how this actually rounds up, but it must otherwise split would not work.
 
 INTERVALS_DIVIDED=`wc -l $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
-| awk '{print $1 "/" "'$NUMBER_OF_BED_FILES'"}' \
-| bc \
-| awk '{print $0+1}'`
+	| awk '{print $1 "/" "'$NUMBER_OF_BED_FILES'"}' \
+	| bc \
+	| awk '{print $0+1}'`
 
 split -l $INTERVALS_DIVIDED \
--a 4 \
--d \
-$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
-$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX
+	-a 4 \
+	-d \
+	$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
+	$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX
 
 ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX* \
-| awk '{print "mv",$0,$0".bed"}' \
-| bash
+	| awk '{print "mv",$0,$0".bed"}' \
+	| bash
 }
 
 COMBINE_GVCF()
@@ -187,7 +187,8 @@ echo \
 ################## Start of VQSR and Refinement Functions ####################
 ##############################################################################
 
-GENERATE_COMBINE_VARIANTS_HOLD_ID(){
+GENERATE_COMBINE_VARIANTS_HOLD_ID()
+{
 COMBINE_VARIANTS_HOLD_ID=$COMBINE_VARIANTS_HOLD_ID'C03_VARIANT_ANNOTATOR_'$PROJECT'_'$BED_FILE_NAME','
 }
 
