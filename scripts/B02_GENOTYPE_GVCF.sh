@@ -19,7 +19,12 @@ CMD=$CMD' '$GATK_DIR'/GenomeAnalysisTK.jar'
 CMD=$CMD' -T GenotypeGVCFs'
 CMD=$CMD' -R '$REF_GENOME
 CMD=$CMD' --annotateNDA'
-CMD=$CMD' --variant '$CORE_PATH'/'$PROJECT'/GVCF/AGGREGATE/'$PREFIX'.'$BED_FILE'.genome.vcf'
+
+for VCF in $(ls $CORE_PATH/$PROJECT/GVCF/AGGREGATE/*$PREFIX"."$BED_FILE.genome.vcf)
+	do
+	  CMD=$CMD' --variant '$VCF
+	done
+
 CMD=$CMD' --disable_auto_index_creation_and_locking_when_reading_rods'
 CMD=$CMD' -XL 11:78516315-78516329'
 CMD=$CMD' -XL 19:5787188-5787257'

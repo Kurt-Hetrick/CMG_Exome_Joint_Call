@@ -14,39 +14,39 @@ fi
 
 ############# FIXED DIRECTORIES ################
 
-SCRIPT_DIR="/mnt/research/tools/LINUX/00_GIT_REPO_KURT/CMG_Exome_Joint_Call/scripts"
-JAVA_1_7="/mnt/research/tools/LINUX/JAVA/jdk1.7.0_25/bin"
-CORE_PATH="/mnt/research/active/"
-GATK_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.3-0"
-GATK_3_1_1_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.1-1"
-GATK_DIR_NIGHTLY="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-nightly-2015-01-15-g92376d3"
-SAMTOOLS_DIR="/mnt/research/tools/LINUX/SAMTOOLS/samtools-0.1.18"
-TABIX_DIR="/mnt/research/tools/LINUX/TABIX/tabix-0.2.6"
-CIDR_SEQSUITE_JAVA_DIR="/mnt/research/tools/LINUX/JAVA/jre1.7.0_45/bin"
-CIDR_SEQSUITE_6_1_1_DIR="/mnt/research/tools/LINUX/CIDRSEQSUITE/6.1.1"
-CIDR_SEQSUITE_4_0_JAVA='/mnt/research/tools/LINUX/JAVA/jre1.6.0_25/bin'
-CIDR_SEQSUITE_DIR_4_0='/mnt/research/tools/LINUX/CIDRSEQSUITE/Version_4_0'
+	SCRIPT_DIR="/mnt/research/tools/LINUX/00_GIT_REPO_KURT/CMG_Exome_Joint_Call/scripts"
+	JAVA_1_7="/mnt/research/tools/LINUX/JAVA/jdk1.7.0_25/bin"
+	CORE_PATH="/mnt/research/active/"
+	GATK_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.3-0"
+	GATK_3_1_1_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.1-1"
+	GATK_DIR_NIGHTLY="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-nightly-2015-01-15-g92376d3"
+	SAMTOOLS_DIR="/mnt/research/tools/LINUX/SAMTOOLS/samtools-0.1.18"
+	TABIX_DIR="/mnt/research/tools/LINUX/TABIX/tabix-0.2.6"
+	CIDR_SEQSUITE_JAVA_DIR="/mnt/research/tools/LINUX/JAVA/jre1.7.0_45/bin"
+	CIDR_SEQSUITE_6_1_1_DIR="/mnt/research/tools/LINUX/CIDRSEQSUITE/6.1.1"
+	CIDR_SEQSUITE_4_0_JAVA='/mnt/research/tools/LINUX/JAVA/jre1.6.0_25/bin'
+	CIDR_SEQSUITE_DIR_4_0='/mnt/research/tools/LINUX/CIDRSEQSUITE/Version_4_0'
 ############## FIXED FILE PATHS ################
 
-KEY="/mnt/research/tools/PIPELINE_FILES/MISC/lee.watkins_jhmi.edu.key"
-HAPMAP_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/hapmap_3.3.b37.vcf"
-OMNI_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/1000G_omni2.5.b37.vcf"
-ONEKG_SNPS_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/1000G_phase1.snps.high_confidence.b37.vcf"
-DBSNP_138_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.vcf"
-ONEKG_INDELS_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/Mills_and_1000G_gold_standard.indels.b37.vcf"
-P3_1KG="/mnt/shared_resources/public_resources/1000genomes/Full_Project/Sep_2014/20130502/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.vcf.gz"
-ExAC="/mnt/shared_resources/public_resources/ExAC/Release_0.3/ExAC.r0.3.sites.vep.vcf.gz"
-KNOWN_SNPS="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.excluding_sites_after_129.vcf"
-VERACODE_CSV="/mnt/research/tools/LINUX/CIDRSEQSUITE/Veracode_hg18_hg19.csv"
-# this is a combined v4 and v4 all merged bait bed files
-MERGED_MENDEL_BED_FILE="/mnt/research/active/M_Valle_MD_SeqWholeExome_120417_1/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
+	KEY="/mnt/research/tools/PIPELINE_FILES/MISC/lee.watkins_jhmi.edu.key"
+	HAPMAP_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/hapmap_3.3.b37.vcf"
+	OMNI_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/1000G_omni2.5.b37.vcf"
+	ONEKG_SNPS_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/1000G_phase1.snps.high_confidence.b37.vcf"
+	DBSNP_138_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.vcf"
+	ONEKG_INDELS_VCF="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/Mills_and_1000G_gold_standard.indels.b37.vcf"
+	P3_1KG="/mnt/shared_resources/public_resources/1000genomes/Full_Project/Sep_2014/20130502/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.vcf.gz"
+	ExAC="/mnt/shared_resources/public_resources/ExAC/Release_0.3/ExAC.r0.3.sites.vep.vcf.gz"
+	KNOWN_SNPS="/mnt/research/tools/PIPELINE_FILES/GATK_resource_bundle/2.8/b37/dbsnp_138.b37.excluding_sites_after_129.vcf"
+	VERACODE_CSV="/mnt/research/tools/LINUX/CIDRSEQSUITE/Veracode_hg18_hg19.csv"
+	# this is a combined v4 and v4 all merged bait bed files
+	MERGED_MENDEL_BED_FILE="/mnt/research/active/M_Valle_MD_SeqWholeExome_120417_1/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
 
 QUEUE_LIST=`qstat -f -s r \
 	| egrep -v "^[0-9]|^-|^queue" \
 	| cut -d @ -f 1 \
 	| sort \
 	| uniq \
-	| egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|bina.q" \
+	| egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|bina.q|qtest.q" \
 	| datamash collapse 1 \
 	| awk '{print "-q",$1}'`
 
@@ -62,9 +62,10 @@ umask 0007
 ################# Start of Combine Gvcf Functions ##########################
 ############################################################################
 
-mkdir -p $CORE_PATH/$PROJECT/{LOGS,TEMP}
+mkdir -p $CORE_PATH/$PROJECT/LOGS
 mkdir -p $CORE_PATH/$PROJECT/MULTI_SAMPLE/VARIANT_SUMMARY_STAT_VCF/
 mkdir -p $CORE_PATH/$PROJECT/GVCF/AGGREGATE
+mkdir -p $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST
 
 # for each mendel project in the sample sheet grab the reference genome and dbsnp file
 
@@ -82,6 +83,7 @@ PROJECT_DBSNP=${PROJECT_INFO_ARRAY[1]}
 
 CREATE_GVCF_LIST()
 {
+
 OLD_GVCF_LIST=$(ls -tr $CORE_PATH/$PROJECT/*.samples.ReSeq.JH2027.list | tail -n1)
 
 TOTAL_SAMPLES=(`(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET \
@@ -101,7 +103,19 @@ TOTAL_SAMPLES=(`(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAM
 >| $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'
 
 GVCF_LIST=(`echo $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'`)
+
+# Take the list above and split it into groups of 300
+	split -l 300 -a 4 -d $GVCF_LIST \
+	$CORE_PATH/$PROJECT/TEMP/SPLIT_LIST/
+
+# append *list suffix to output
+	ls $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST/* \
+		| awk '{print "mv",$0,$0".list"}' \
+		| bash	
+
 }
+
+
 
 FORMAT_AND_SCATTER_BAIT_BED()
 {
@@ -143,41 +157,98 @@ ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX* \
 
 COMBINE_GVCF()
 {
-echo \
- qsub $QUEUE_LIST \
- -N 'A01_COMBINE_GVCF_'$PROJECT'_'$BED_FILE_NAME \
- -j y -o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_A01_COMBINE_GVCF_'$BED_FILE_NAME.log \
- $SCRIPT_DIR/A01_COMBINE_GVCF.sh \
- $JAVA_1_7 $GATK_DIR $REF_GENOME \
- $KEY $CORE_PATH $PROJECT $GVCF_LIST \
- $PREFIX $BED_FILE_NAME
- }
+	echo \
+	qsub $QUEUE_LIST \
+	-N 'A01_COMBINE_GVCF_'$PROJECT'_'$PGVCF_LIST_NAME'_'$BED_FILE_NAME \
+	-j y \
+	-o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_A01_COMBINE_GVCF_'$BED_FILE_NAME.log \
+	$SCRIPT_DIR/A01_COMBINE_GVCF.sh \
+	$JAVA_1_7 \
+	$GATK_DIR \
+	$REF_GENOME \
+	$KEY \
+	$CORE_PATH \
+	$PROJECT \
+	$PGVCF_LIST \
+	$PREFIX \
+	$BED_FILE_NAME
+}
+
+for BED_FILE in $(ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/SPLITTED_BED_FILE*);
+do
+	BED_FILE_NAME=$(basename $BED_FILE .bed)
+		for PGVCF_LIST in $(ls $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST/*list)
+			do
+				PGVCF_LIST_NAME=$(basename $PGVCF_LIST .list)
+				COMBINE_GVCF
+				echo sleep 0.1s
+		done
+done
 
 ############ END OF THE NEW GVCF SPLIT TO TEST #####################
 
-GENOTYPE_GVCF(){
-echo \
- qsub $QUEUE_LIST \
- -N B02_GENOTYPE_GVCF_$PROJECT'_'$BED_FILE_NAME \
- -hold_jid A01_COMBINE_GVCF_$PROJECT'_'$BED_FILE_NAME \
- -j y -o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_B02_GENOTYPE_GVCF_'$BED_FILE_NAME.log \
- $SCRIPT_DIR/B02_GENOTYPE_GVCF.sh \
- $JAVA_1_7 $GATK_DIR $REF_GENOME \
- $KEY $CORE_PATH $PROJECT \
- $PREFIX $BED_FILE_NAME
-}
+	BUILD_HOLD_ID_GENOTYPE_GVCF ()
+	{
+		for PROJECT_A in $PROJECT;
+		# yeah, so uh, this looks bad, but I just needed a way to set a new project variable that equals the multi-sample project variable.
+		do
+			GENOTYPE_GVCF_HOLD_ID="-hold_jid "
 
-VARIANT_ANNOTATOR(){
-echo \
- qsub $QUEUE_LIST \
- -N C03_VARIANT_ANNOTATOR_$PROJECT'_'$BED_FILE_NAME \
- -hold_jid B02_GENOTYPE_GVCF_$PROJECT'_'$BED_FILE_NAME \
- -j y -o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_C03_VARIANT_ANNOTATOR_'$BED_FILE_NAME.log \
- $SCRIPT_DIR/C03_VARIANT_ANNOTATOR.sh \
- $JAVA_1_7 $GATK_DIR $REF_GENOME \
- $KEY $CORE_PATH $PROJECT \
- $PREFIX $BED_FILE_NAME $PROJECT_DBSNP
-}
+				for PGVCF_LIST in $(ls $CORE_PATH/$PROJECT_A/TEMP/SPLIT_SS/*list)
+					do
+						PGVCF_LIST_NAME=$(basename $PGVCF_LIST .list)
+						GENOTYPE_GVCF_HOLD_ID=$GENOTYPE_GVCF_HOLD_ID'A01_COMBINE_GVCF_'$PROJECT_A'_'$PGVCF_LIST_NAME'_'$BED_FILE_NAME','
+				done
+		done
+	}
+
+	GENOTYPE_GVCF ()
+	{
+		echo \
+		qsub $QUEUE_LIST \
+		-N B02_GENOTYPE_GVCF_$PROJECT'_'$BED_FILE_NAME \
+		$GENOTYPE_GVCF_HOLD_ID \
+		-j y \
+		-o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_B02_GENOTYPE_GVCF_'$BED_FILE_NAME.log \
+		$SCRIPT_DIR/B02_GENOTYPE_GVCF.sh \
+		$JAVA_1_7 \
+		$GATK_DIR \
+		$REF_GENOME \
+		$KEY \
+		$CORE_PATH \
+		$PROJECT \
+		$PREFIX \
+		$BED_FILE_NAME
+	}
+
+	VARIANT_ANNOTATOR()
+	{
+		echo \
+		qsub $QUEUE_LIST \
+		-N C03_VARIANT_ANNOTATOR_$PROJECT'_'$BED_FILE_NAME \
+		-hold_jid B02_GENOTYPE_GVCF_$PROJECT'_'$BED_FILE_NAME \
+		-j y -o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_C03_VARIANT_ANNOTATOR_'$BED_FILE_NAME.log \
+		$SCRIPT_DIR/C03_VARIANT_ANNOTATOR.sh \
+		$JAVA_1_7 $GATK_DIR $REF_GENOME \
+		$KEY $CORE_PATH $PROJECT \
+		$PREFIX $BED_FILE_NAME $PROJECT_DBSNP
+	}
+
+	GENERATE_COMBINE_VARIANTS_HOLD_ID()
+	{
+	COMBINE_VARIANTS_HOLD_ID=$COMBINE_VARIANTS_HOLD_ID'C03_VARIANT_ANNOTATOR_'$PROJECT'_'$BED_FILE_NAME','
+	}
+
+for BED_FILE in $(ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/SPLITTED_BED_FILE*);
+do
+	BED_FILE_NAME=$(basename $BED_FILE .bed)
+	BUILD_HOLD_ID_GENOTYPE_GVCF
+	GENOTYPE_GVCF
+	echo sleep 0.1s
+	VARIANT_ANNOTATOR
+	echo sleep 0.1s
+	GENERATE_COMBINE_VARIANTS_HOLD_ID
+done
 
 ##############################################################################
 ##################### End of Combine Gvcf Functions ##########################
@@ -187,10 +258,7 @@ echo \
 ################## Start of VQSR and Refinement Functions ####################
 ##############################################################################
 
-GENERATE_COMBINE_VARIANTS_HOLD_ID()
-{
-COMBINE_VARIANTS_HOLD_ID=$COMBINE_VARIANTS_HOLD_ID'C03_VARIANT_ANNOTATOR_'$PROJECT'_'$BED_FILE_NAME','
-}
+
 
 COMBINE_VARIANTS(){
 echo \
@@ -681,15 +749,6 @@ CREATE_PROJECT_INFO_ARRAY
 FORMAT_AND_SCATTER_BAIT_BED
 CREATE_GVCF_LIST
 
-
-for BED_FILE in $(ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/SPLITTED_BED_FILE*);
- do
-BED_FILE_NAME=$(basename $BED_FILE .bed)
-COMBINE_GVCF
-GENOTYPE_GVCF
-VARIANT_ANNOTATOR
-GENERATE_COMBINE_VARIANTS_HOLD_ID
- done
 
 COMBINE_VARIANTS
 VARIANT_RECALIBRATOR_SNV

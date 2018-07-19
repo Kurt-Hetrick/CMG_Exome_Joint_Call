@@ -29,25 +29,26 @@ KEY=$4
 
 CORE_PATH=$5
 PROJECT=$6
-GVCF_LIST=$7
+PGVCF_LIST=$7
 PREFIX=$8
 BED_FILE=$9
 
 mkdir -p $CORE_PATH/$PROJECT/GVCF/AGGREGATE
 mkdir -p $CORE_PATH/$PROJECT/MULTI_SAMPLE
-mkdir -p $CORE_PATH/$PROJECT/TEMP
+mkdir -p $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST
 
+PGVCF_LIST_NAME=$(basename $PGVCF_LIST .list)
 
 CMD=$JAVA_1_7'/java -jar'
 CMD=$CMD' '$GATK_DIR'/GenomeAnalysisTK.jar'
 CMD=$CMD' -T CombineGVCFs'
 CMD=$CMD' -R '$REF_GENOME
-CMD=$CMD' --variant '$GVCF_LIST
+CMD=$CMD' --variant '$PGVCF_LIST
 CMD=$CMD' -L '$CORE_PATH'/'$PROJECT'/TEMP/BED_FILE_SPLIT/'$BED_FILE'.bed'
 CMD=$CMD' --disable_auto_index_creation_and_locking_when_reading_rods'
 CMD=$CMD' -et NO_ET'
 CMD=$CMD' -K '$KEY
-CMD=$CMD' -o '$CORE_PATH'/'$PROJECT'/GVCF/AGGREGATE/'$PREFIX'.'$BED_FILE'.genome.vcf'
+CMD=$CMD' -o '$CORE_PATH'/'$PROJECT'/GVCF/AGGREGATE/'$PGVCF_LIST_NAME'.'$PREFIX'.'$BED_FILE'.genome.vcf'
 
 echo $CMD >> $CORE_PATH/$PROJECT/command_lines.txt
 echo >> $CORE_PATH/$PROJECT/command_lines.txt
