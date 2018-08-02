@@ -48,7 +48,7 @@ QUEUE_LIST=`qstat -f -s r \
 	| uniq \
 	| egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|bina.q|qtest.q" \
 	| datamash collapse 1 \
-	| awk '{print "-q",$1}'`
+	| awk '{print "-q",$1,"-l \x27hostname=!DellR730-03\x27"}'`
 
 # load gcc 5.1.0 for programs like verifyBamID
 ## this will get pushed out to all of the compute nodes since I specify env var to pushed out with qsub
@@ -574,7 +574,7 @@ echo \
 SETUP_AND_RUN_ANNOVAR()
 {
 echo \
- qsub $QUEUE_LIST",bigmem.q" \
+ qsub $QUEUE_LIST \
  -N K11B-1_SETUP_AND_RUN_ANNOVER_$JOB_ID_SM_TAG \
  -hold_jid K11B_SELECT_SNVS_ON_BAIT_BY_SAMPLE_$JOB_ID_SM_TAG \
  -j y -o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_'$SM_TAG'_K11B-1_SETUP_AND_RUN_ANNOVER.log' \
