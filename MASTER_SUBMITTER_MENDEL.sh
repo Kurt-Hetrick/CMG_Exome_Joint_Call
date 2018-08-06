@@ -16,7 +16,7 @@ fi
 
 	SCRIPT_DIR="/mnt/research/tools/LINUX/00_GIT_REPO_KURT/CMG_Exome_Joint_Call/scripts"
 	JAVA_1_7="/mnt/research/tools/LINUX/JAVA/jdk1.7.0_25/bin"
-	CORE_PATH="/mnt/research/active"
+	CORE_PATH="/mnt/research/active/"
 	GATK_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.3-0"
 	GATK_3_1_1_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.1-1"
 	GATK_DIR_NIGHTLY="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-nightly-2015-01-15-g92376d3"
