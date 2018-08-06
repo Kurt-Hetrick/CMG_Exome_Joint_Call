@@ -16,7 +16,7 @@ fi
 
 	SCRIPT_DIR="/mnt/research/tools/LINUX/00_GIT_REPO_KURT/CMG_Exome_Joint_Call/scripts"
 	JAVA_1_7="/mnt/research/tools/LINUX/JAVA/jdk1.7.0_25/bin"
-	CORE_PATH="/mnt/research/active/"
+	CORE_PATH="/mnt/research/active"
 	GATK_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.3-0"
 	GATK_3_1_1_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.1-1"
 	GATK_DIR_NIGHTLY="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-nightly-2015-01-15-g92376d3"
@@ -26,6 +26,7 @@ fi
 	CIDR_SEQSUITE_6_1_1_DIR="/mnt/research/tools/LINUX/CIDRSEQSUITE/6.1.1"
 	CIDR_SEQSUITE_4_0_JAVA='/mnt/research/tools/LINUX/JAVA/jre1.6.0_25/bin'
 	CIDR_SEQSUITE_DIR_4_0='/mnt/research/tools/LINUX/CIDRSEQSUITE/Version_4_0'
+
 ############## FIXED FILE PATHS ################
 
 	KEY="/mnt/research/tools/PIPELINE_FILES/MISC/lee.watkins_jhmi.edu.key"
@@ -41,40 +42,69 @@ fi
 	# this is a combined v4 and v4 all merged bait bed files
 	MERGED_MENDEL_BED_FILE="/mnt/research/active/M_Valle_MD_SeqWholeExome_120417_1/BED_Files/BAITS_Merged_S03723314_S06588914.bed"
 
-QUEUE_LIST=`qstat -f -s r \
-	| egrep -v "^[0-9]|^-|^queue" \
-	| cut -d @ -f 1 \
-	| sort \
-	| uniq \
-	| egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|bina.q|qtest.q" \
-	| datamash collapse 1 \
-	| awk '{print "-q",$1,"-l \x27hostname=!DellR730-03\x27"}'`
+# other environment settings
 
-# load gcc 5.1.0 for programs like verifyBamID
-## this will get pushed out to all of the compute nodes since I specify env var to pushed out with qsub
-module load gcc/5.1.0
+	QUEUE_LIST=`qstat -f -s r \
+		| egrep -v "^[0-9]|^-|^queue" \
+		| cut -d @ -f 1 \
+		| sort \
+		| uniq \
+		| egrep -v "bigmem.q|all.q|cgc.q|programmers.q|rhel7.q|bina.q|qtest.q" \
+		| datamash collapse 1 \
+		| awk '{print "-q",$1}'`
 
-# explicitly setting this b/c not everybody has had the $HOME directory transferred and I'm not going to through
-# and figure out who does and does not have this set correctly
-umask 0007
+	# load gcc 5.1.0 for programs like verifyBamID
+	## this will get pushed out to all of the compute nodes since I specify env var to pushed out with qsub
+	module load gcc/5.1.0
+
+	# explicitly setting this b/c not everybody has had the $HOME directory transferred and I'm not going to through
+	# and figure out who does and does not have this set correctly
+	umask 0007
 
 ############################################################################
 ################# Start of Combine Gvcf Functions ##########################
 ############################################################################
 
-mkdir -p $CORE_PATH/$PROJECT/LOGS
-mkdir -p $CORE_PATH/$PROJECT/MULTI_SAMPLE/VARIANT_SUMMARY_STAT_VCF/
-mkdir -p $CORE_PATH/$PROJECT/GVCF/AGGREGATE
-mkdir -p $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST
+	# This checks to see if bed file directory and split gvcf list has been created from a previous run.
+	# If so, remove them to not interfere with current run			
+
+		if [ -d $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT ]
+			then
+				rm -rf $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT
+		fi
+
+		if [ -d $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST ]
+			then
+				rm -rf $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST
+		fi
+
+	# make the directories
+
+		mkdir -p $CORE_PATH/$PROJECT/LOGS
+		mkdir -p $CORE_PATH/$PROJECT/MULTI_SAMPLE/VARIANT_SUMMARY_STAT_VCF
+		mkdir -p $CORE_PATH/$PROJECT/GVCF/AGGREGATE
+		mkdir -p $CORE_PATH/$PROJECT/TEMP/{SPLIT_LIST,AGGREGATE,BED_FILE_SPLIT}
+
+		# THIS WAS VITO'S OLD, STUFF, SUPPOSED TO CLEAR UP BED FILES, ETC ALREADY CREATED. NEED TO REVISIT
+		# THERE REALLY SHOULDN'T BE ANY COLLISIONS DUE TO THE FILE PREFIX.
+		# KEPT THE OUTPUT B/C OF THE REGIONS FAILING DUE TO TOO MANY ALLELES
+
+			# mkdir -p $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT
+
+			# # if [ -d $CORE_PATH/$PROJECT/TEMP/AGGREGATE ]
+			# # then
+			# #	rm -rf $CORE_PATH/$PROJECT/TEMP/AGGREGATE
+			# # fi
+			# mkdir -p $CORE_PATH/$PROJECT/TEMP/AGGREGATE
 
 # for each mendel project in the sample sheet grab the reference genome and dbsnp file
 
 CREATE_PROJECT_INFO_ARRAY ()
 {
-PROJECT_INFO_ARRAY=(`sed 's/\r//g' $SAMPLE_SHEET | sed 's/,/\t/g' | awk 'NR>1 {print $12,$18}' | sort | uniq`)
+	PROJECT_INFO_ARRAY=(`sed 's/\r//g' $SAMPLE_SHEET | sed 's/,/\t/g' | awk 'NR>1 {print $12,$18}' | sort | uniq`)
 
-REF_GENOME=${PROJECT_INFO_ARRAY[0]}
-PROJECT_DBSNP=${PROJECT_INFO_ARRAY[1]}
+	REF_GENOME=${PROJECT_INFO_ARRAY[0]}
+	PROJECT_DBSNP=${PROJECT_INFO_ARRAY[1]}
 }
 
 # get the full path of the last gvcf list file.
@@ -84,76 +114,79 @@ PROJECT_DBSNP=${PROJECT_INFO_ARRAY[1]}
 CREATE_GVCF_LIST()
 {
 
-OLD_GVCF_LIST=$(ls -tr $CORE_PATH/$PROJECT/*.samples.ReSeq.JH2027.list | tail -n1)
+	OLD_GVCF_LIST=$(ls -tr $CORE_PATH/$PROJECT/*.samples.ReSeq.JH2027.list | tail -n1)
 
-TOTAL_SAMPLES=(`(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET \
-	| sort \
-	| uniq \
-	| awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') \
-	| sort \
-	| uniq \
-	| wc -l`)
+	TOTAL_SAMPLES=(`(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET \
+		| sort \
+		| uniq \
+		| awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') \
+		| sort \
+		| uniq \
+		| wc -l`)
 
-(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET \
-	| sort \
-	| uniq \
-	| awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') \
-	| sort \
-	| uniq \
->| $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'
+	(cat $OLD_GVCF_LIST ; awk 'BEGIN{FS=","} NR>1{print $1,$8}' $SAMPLE_SHEET \
+		| sort \
+		| uniq \
+		| awk 'BEGIN{OFS="/"}{print "'$CORE_PATH'"$1,"GVCF",$2".genome.vcf"}') \
+		| sort \
+		| uniq \
+	>| $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'
 
-GVCF_LIST=(`echo $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'`)
+	GVCF_LIST=(`echo $CORE_PATH'/'$PROJECT'/'$TOTAL_SAMPLES'.samples.ReSeq.JH2027.list'`)
 
-# Take the list above and split it into groups of 300
-	split -l 300 -a 4 -d $GVCF_LIST \
-	$CORE_PATH/$PROJECT/TEMP/SPLIT_LIST/
+	# Take the list above and split it into groups of 300
+		split -l 300 -a 4 -d $GVCF_LIST \
+		$CORE_PATH/$PROJECT/TEMP/SPLIT_LIST/
 
-# append *list suffix to output
-	ls $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST/* \
-		| awk '{print "mv",$0,$0".list"}' \
-		| bash	
-
+	# append *list suffix to output
+		ls $CORE_PATH/$PROJECT/TEMP/SPLIT_LIST/* \
+			| awk '{print "mv",$0,$0".list"}' \
+			| bash	
 }
-
-
 
 FORMAT_AND_SCATTER_BAIT_BED()
 {
-BED_FILE_PREFIX=(`echo SPLITTED_BED_FILE_`)
+	BED_FILE_PREFIX=(`echo SPLITTED_BED_FILE_`)
 
-awk 1 $MERGED_MENDEL_BED_FILE \
-| sed -r 's/\r//g ; s/chr//g ; s/[[:space:]]+/\t/g' \
->| $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed
+	awk 1 $MERGED_MENDEL_BED_FILE \
+	| sed -r 's/\r//g ; s/chr//g ; s/[[:space:]]+/\t/g' \
+	>| $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed
 
-(awk '$1~/^[0-9]/' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k1,1n -k2,2n ; \
-	awk '$1=="X"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
-	awk '$1=="Y"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
-	awk '$1=="MT"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n) \
->| $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed
+	(awk '$1~/^[0-9]/' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k1,1n -k2,2n ; \
+		awk '$1=="X"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
+		awk '$1=="Y"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n ; \
+		awk '$1=="MT"' $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_BED_FILE.bed | sort -k 2,2n) \
+	>| $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed
 
-# get a line count for the number of for the bed file above
-# divide the line count by the number of mini-bed files you want
-# if there is a remainder round up the next integer
+	# get a line count for the number of for the bed file above
+	# divide the line count by the number of mini-bed files you want
+	# if there is a remainder round up the next integer
 
-# this somehow sort of works, but the math ends up being off...
-# if I wanted 1000 fold scatter gather, this would actually create 997.
-# and I don't see how this actually rounds up, but it must otherwise split would not work.
+	# this somehow sort of works, but the math ends up being off...
+	# if I wanted 1000 fold scatter gather, this would actually create 997.
+	# and I don't see how this actually rounds up, but it must otherwise split would not work.
 
-INTERVALS_DIVIDED=`wc -l $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
-	| awk '{print $1 "/" "'$NUMBER_OF_BED_FILES'"}' \
-	| bc \
-	| awk '{print $0+1}'`
+	INTERVALS_DIVIDED=`wc -l $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
+		| awk '{print $1 "/" "'$NUMBER_OF_BED_FILES'"}' \
+		| bc \
+		| awk '{print $0+1}'`
 
-split -l $INTERVALS_DIVIDED \
-	-a 4 \
-	-d \
-	$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
-	$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX
+	split -l $INTERVALS_DIVIDED \
+		-a 4 \
+		-d \
+		$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/FORMATTED_AND_SORTED_BED_FILE.bed \
+		$CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX
 
-ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX* \
-	| awk '{print "mv",$0,$0".bed"}' \
-	| bash
+	ls $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT/$BED_FILE_PREFIX* \
+		| awk '{print "mv",$0,$0".bed"}' \
+		| bash
 }
+
+
+
+CREATE_PROJECT_INFO_ARRAY
+FORMAT_AND_SCATTER_BAIT_BED
+CREATE_GVCF_LIST
 
 COMBINE_GVCF()
 {
@@ -161,7 +194,7 @@ COMBINE_GVCF()
 	qsub $QUEUE_LIST \
 	-N 'A01_COMBINE_GVCF_'$PROJECT'_'$PGVCF_LIST_NAME'_'$BED_FILE_NAME \
 	-j y \
-	-o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_A01_COMBINE_GVCF_'$BED_FILE_NAME.log \
+	-o $CORE_PATH/$PROJECT/LOGS/$PREFIX'_A01_COMBINE_GVCF_'$PGVCF_LIST_NAME'_'$BED_FILE_NAME.log \
 	$SCRIPT_DIR/A01_COMBINE_GVCF.sh \
 	$JAVA_1_7 \
 	$GATK_DIR \
@@ -194,7 +227,7 @@ done
 		do
 			GENOTYPE_GVCF_HOLD_ID="-hold_jid "
 
-				for PGVCF_LIST in $(ls $CORE_PATH/$PROJECT_A/TEMP/SPLIT_SS/*list)
+				for PGVCF_LIST in $(ls $CORE_PATH/$PROJECT_A/TEMP/SPLIT_LIST/*list)
 					do
 						PGVCF_LIST_NAME=$(basename $PGVCF_LIST .list)
 						GENOTYPE_GVCF_HOLD_ID=$GENOTYPE_GVCF_HOLD_ID'A01_COMBINE_GVCF_'$PROJECT_A'_'$PGVCF_LIST_NAME'_'$BED_FILE_NAME','
@@ -737,18 +770,6 @@ if [ -d $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT ]
  then
  	rm -rf $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT
 fi
-mkdir -p $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT
-
-# if [ -d $CORE_PATH/$PROJECT/TEMP/AGGREGATE ]
-# then
-#	rm -rf $CORE_PATH/$PROJECT/TEMP/AGGREGATE
-# fi
-mkdir -p $CORE_PATH/$PROJECT/TEMP/AGGREGATE
-
-CREATE_PROJECT_INFO_ARRAY
-FORMAT_AND_SCATTER_BAIT_BED
-CREATE_GVCF_LIST
-
 
 COMBINE_VARIANTS
 VARIANT_RECALIBRATOR_SNV
