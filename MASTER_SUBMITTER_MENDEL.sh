@@ -16,6 +16,7 @@ fi
 
 	SCRIPT_DIR="/mnt/research/tools/LINUX/00_GIT_REPO_KURT/CMG_Exome_Joint_Call/scripts"
 	JAVA_1_7="/mnt/research/tools/LINUX/JAVA/jdk1.7.0_25/bin"
+	# the slash at the end of core path is needed...
 	CORE_PATH="/mnt/research/active/"
 	GATK_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.3-0"
 	GATK_3_1_1_DIR="/mnt/research/tools/LINUX/GATK/GenomeAnalysisTK-3.1-1"
@@ -425,16 +426,16 @@ echo \
 
 CREATE_SAMPLE_INFO_ARRAY ()
 {
-SAMPLE_INFO_ARRAY=(`sed 's/\r//g' $SAMPLE_SHEET | awk 'BEGIN{FS=","} NR>1 {print $1,$8,$17,$15,$18,$12}' | sed 's/,/\t/g' | sort -k 2,2 | uniq | awk '$2=="'$SAMPLE'" {print $1,$2,$3,$4,$5,$6}'`)
+	SAMPLE_INFO_ARRAY=(`sed 's/\r//g' $SAMPLE_SHEET | awk 'BEGIN{FS=","} NR>1 {print $1,$8,$17,$15,$18,$12}' | sed 's/,/\t/g' | sort -k 2,2 | uniq | awk '$2=="'$SAMPLE'" {print $1,$2,$3,$4,$5,$6}'`)
 
-PROJECT_SAMPLE=${SAMPLE_INFO_ARRAY[0]}
-SM_TAG=${SAMPLE_INFO_ARRAY[1]}
-TARGET_BED=${SAMPLE_INFO_ARRAY[2]}
-TITV_BED=${SAMPLE_INFO_ARRAY[3]}
-DBSNP=${SAMPLE_INFO_ARRAY[4]}
-SAMPLE_REF_GENOME=${SAMPLE_INFO_ARRAY[5]}
+	PROJECT_SAMPLE=${SAMPLE_INFO_ARRAY[0]}
+	SM_TAG=${SAMPLE_INFO_ARRAY[1]}
+	TARGET_BED=${SAMPLE_INFO_ARRAY[2]}
+	TITV_BED=${SAMPLE_INFO_ARRAY[3]}
+	DBSNP=${SAMPLE_INFO_ARRAY[4]}
+	SAMPLE_REF_GENOME=${SAMPLE_INFO_ARRAY[5]}
 
-JOB_ID_SM_TAG=$(echo $SM_TAG | sed 's/@/_/g')
+	JOB_ID_SM_TAG=$(echo $SM_TAG | sed 's/@/_/g')
 }
 
 SELECT_PASSING_VARIANTS_PER_SAMPLE(){
@@ -766,10 +767,12 @@ SELECT_INDELS_ALL_PASS ()
 ###################### End of Functions ##################################
 ##########################################################################
 
-if [ -d $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT ]
- then
- 	rm -rf $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT
-fi
+
+# this probably shouldn't be here
+# if [ -d $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT ]
+#  then
+#  	rm -rf $CORE_PATH/$PROJECT/TEMP/BED_FILE_SPLIT
+# fi
 
 COMBINE_VARIANTS
 VARIANT_RECALIBRATOR_SNV
